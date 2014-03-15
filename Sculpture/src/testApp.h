@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOculusRift.h"
+#include "Utils/Cameras/ofxWalkingFirstPersonCameraOculus.h"
 
 // Lots in this example comes from the great demo by James George:
 // https://github.com/obviousjim/ofxOculusRift/blob/master/example-OculusRiftRendering/src/testApp.h
@@ -47,7 +48,9 @@ class testApp : public ofBaseApp
 	ofxOculusRift		oculusRift;
 
 	ofLight				light;
-	ofCamera			cam;
+	//ofCamera			cam;
+	ofxWalkingFirstPersonCameraOculus camera;
+	
 	bool showOverlay;
 	bool predictive;
 	vector<DemoSphere> demos;
