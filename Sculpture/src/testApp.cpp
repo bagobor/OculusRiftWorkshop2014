@@ -12,10 +12,15 @@ void testApp::setup()
 	showOverlay = false;
 	predictive = true;
 	
-	ofHideCursor();
+
 	
 	oculusRift.baseCamera = &camera;
 	oculusRift.setup();
+	
+	if( oculusRift.isSetup() )
+	{
+		ofHideCursor();
+	}
 	
 	gridSize = 150.0f;
 	
@@ -60,37 +65,7 @@ void testApp::update()
 	ofVec2f mouseVel = mouse - lastMouse;
 	lastMouse = mouse;
 	
-	/*
-	// Movement
-	ofVec3f forward =  ofVec3f(0,0,1) * oculusRift.getOrientationQuat() * cam.getOrientationQuat();
-	ofVec3f sideways = ofVec3f(1,0,0) * oculusRift.getOrientationQuat() * cam.getOrientationQuat();
-	
-	float movementSpeed = 2.0f;
-	if( ofGetKeyPressed('w') ) cam.setPosition( cam.getPosition() + (-forward * movementSpeed) );
-	if( ofGetKeyPressed('s') ) cam.setPosition( cam.getPosition() + ( forward * movementSpeed) );
-	
-	if( ofGetKeyPressed('a') ) cam.setPosition( cam.getPosition() + (-sideways * movementSpeed) );
-	if( ofGetKeyPressed('d') ) cam.setPosition( cam.getPosition() + ( sideways * movementSpeed) );
-	
-	// Rotation
-	float rotationDrag = 0.8f;
-	float rotationInertia = 0.2f;
-	float mouseSensitivity = 0.3f;
-	
-	// Apply draw to rotation and stop when it gets very close to zero
-	rotationSpeed *= rotationDrag;
-	if( rotationSpeed.length() < 0.00000001f ) { rotationSpeed = ofVec3f(0,0,0); }
 
-	// When we hold down the right mouse button, calculate some rotation in the Y axis.
-	if( ofGetMousePressed( OF_MOUSE_BUTTON_RIGHT) )
-	{
-		rotationSpeed.y = ofLerp( rotationSpeed.y,  mouseVel.x * mouseSensitivity, rotationInertia );
-	}
-
-	ofQuaternion tmpRotY( rotationSpeed.y, ofVec3f(0,1,0));
-	cam.setOrientation( cam.getOrientationQuat() * tmpRotY );
-	*/
-	
 	// Update scene
 	float perlinTime = ofGetElapsedTimef()/80.0;
 	float perlinSpaceDivider = 100.0f;
@@ -106,6 +81,7 @@ void testApp::update()
 		demos[i].pos.y *= ofMap(tmpDistFromCentre, 0.0f, 1.0f, 0.1f, 1.0f);
 	}
     
+	
 	// Hit test against the mouse in Rift space
     if(oculusRift.isSetup())
 	{
@@ -115,6 +91,14 @@ void testApp::update()
             demos[i].isMouseOvered = (demos[i].mouseDist < 50);
         }
     }
+	else // or in normal camera space
+	{
+		for(int i = 0; i < demos.size(); i++)
+		{
+			demos[i].mouseDist = ofVec2f(ofGetMouseX(),ofGetMouseY()).distance( camera.worldToScreen( demos[i].pos ));
+			demos[i].isMouseOvered = (demos[i].mouseDist < 50);
+		}
+	}
 	
 	updateLinesMesh();
 }
