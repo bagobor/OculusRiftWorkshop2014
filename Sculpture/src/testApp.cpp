@@ -14,7 +14,7 @@ void testApp::setup()
 	
 	ofHideCursor();
 	
-	oculusRift.baseCamera = &cam;
+	oculusRift.baseCamera = &camera;
 	oculusRift.setup();
 	
 	gridSize = 150.0f;
@@ -39,9 +39,9 @@ void testApp::setup()
 	}
 	
 	//enable mouse;
-	cam.begin();
-	cam.end();
-	cam.setGlobalPosition( 0, 100, 500 ); // let's start by stepping back a little bit and put ourselves a few units up from the floor
+	camera.begin();
+	camera.end();
+	camera.setGlobalPosition( 0, 100, 500 ); // let's start by stepping back a little bit and put ourselves a few units up from the floor
 	
 	lastMouse = ofVec2f( ofGetMouseX(), ofGetMouseY() );
 	
@@ -52,12 +52,15 @@ void testApp::setup()
 //--------------------------------------------------------------
 void testApp::update()
 {
+	camera.setHeadsetOrientation( oculusRift.getOrientationQuat() );
+	camera.update();
 	
 	// Update mouse values
 	ofVec2f mouse = ofVec2f(ofGetMouseX(), ofGetMouseY());
 	ofVec2f mouseVel = mouse - lastMouse;
 	lastMouse = mouse;
 	
+	/*
 	// Movement
 	ofVec3f forward =  ofVec3f(0,0,1) * oculusRift.getOrientationQuat() * cam.getOrientationQuat();
 	ofVec3f sideways = ofVec3f(1,0,0) * oculusRift.getOrientationQuat() * cam.getOrientationQuat();
@@ -86,7 +89,7 @@ void testApp::update()
 
 	ofQuaternion tmpRotY( rotationSpeed.y, ofVec3f(0,1,0));
 	cam.setOrientation( cam.getOrientationQuat() * tmpRotY );
-	
+	*/
 	
 	// Update scene
 	float perlinTime = ofGetElapsedTimef()/80.0;
@@ -156,10 +159,11 @@ void testApp::draw()
 		
 		glDisable(GL_DEPTH_TEST);
 	}
-	else{
-		cam.begin();
-		drawScene();
-		cam.end();
+	else
+	{
+		camera.begin();
+			drawScene();
+		camera.end();
 	}
 	
 }

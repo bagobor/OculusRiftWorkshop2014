@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOculusRift.h"
-
+#include "Utils/Cameras/ofxWalkingFirstPersonCamera.h"
 
 class testApp : public ofBaseApp
 {
@@ -19,7 +19,9 @@ class testApp : public ofBaseApp
 		ofxOculusRift		oculusRift;
 
 		ofLight				light;
-		ofCamera			cam;
+		//ofCamera			cam;
+		ofxWalkingFirstPersonCameraOculus camera;
+	
 		bool showOverlay;
 		bool predictive;
 
