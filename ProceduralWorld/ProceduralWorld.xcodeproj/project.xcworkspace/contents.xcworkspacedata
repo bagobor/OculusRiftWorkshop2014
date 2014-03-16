@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:GeometryShaders.xcodeproj">
+      location = "self:ProceduralWorld.xcodeproj">
    </FileRef>
 </Workspace>
