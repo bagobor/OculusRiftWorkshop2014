@@ -7,6 +7,7 @@
 // Lots in this example comes from the great demo by James George:
 // https://github.com/obviousjim/ofxOculusRift/blob/master/example-OculusRiftRendering/src/testApp.h
 
+// -----------------------------------------
 class DemoSphere
 {
 	public:
@@ -21,7 +22,8 @@ class DemoSphere
 		bool isMouseOvered;
 };
 
-class testApp : public ofBaseApp
+// -----------------------------------------
+class ofApp : public ofBaseApp
 {
   public:
 	
@@ -56,6 +58,8 @@ class testApp : public ofBaseApp
 	vector<DemoSphere> demos;
 	float gridSize;
 	
+	float mouseAffectionRadius;
+	float lineConnectionMaxDistance;
 	ofMesh linesMesh;
     
     ofVec3f cursorRift;
@@ -63,6 +67,8 @@ class testApp : public ofBaseApp
 	
 	ofVec2f lastMouse;
 	ofVec2f rotationSpeed;
+	
+	ofTrueTypeFont meshFont;
 	
 	vector< vector< vector< DemoSphere* > > > spacePartitioningGrid;
 	int					spacePartitioningResX;

@@ -1,18 +1,18 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 //--------------------------------------------------------------
-void testApp::setup()
+void ofApp::setup()
 {
 	ofBackground(0);
 	ofSetLogLevel( OF_LOG_VERBOSE );
 	ofSetVerticalSync( true );
 
+	meshFont.loadFont("Fonts/DIN.otf", 10, true, true, true, 0.0, 96 );
+	
 	//ofToggleFullscreen();
 	
 	showOverlay = false;
 	predictive = true;
-	
-
 	
 	oculusRift.baseCamera = &camera;
 	oculusRift.setup();
@@ -50,12 +50,15 @@ void testApp::setup()
 	
 	lastMouse = ofVec2f( ofGetMouseX(), ofGetMouseY() );
 	
+	lineConnectionMaxDistance = 0.0f;
+	mouseAffectionRadius = 300.0f;
+	
 	initializeSpacePartitioning();
 }
 
 
 //--------------------------------------------------------------
-void testApp::update()
+void ofApp::update()
 {
 	camera.setHeadsetOrientation( oculusRift.getOrientationQuat() );
 	camera.update();
@@ -105,7 +108,7 @@ void testApp::update()
 
 
 //--------------------------------------------------------------
-void testApp::draw()
+void ofApp::draw()
 {
 
 	if(oculusRift.isSetup())
@@ -153,7 +156,7 @@ void testApp::draw()
 }
 
 //--------------------------------------------------------------
-void testApp::drawScene()
+void ofApp::drawScene()
 {
 	ofEnableDepthTest();
 		
@@ -190,6 +193,13 @@ void testApp::drawScene()
 			ofPopMatrix();
 		}
 		
+		// Draw the text
+	
+		ofSetColor( ofColor::white );
+		meshFont.drawStringAsShapes("Lines Max Connection Distance: " + ofToString(lineConnectionMaxDistance, 1), -450, 150 );
+		meshFont.drawStringAsShapes("Mouse Affection Radius: " + ofToString(mouseAffectionRadius, 1), -450, 130 );
+	
+	
 		ofNoFill();
 		// Billboard and draw the mouse
 		if(oculusRift.isSetup())
@@ -209,7 +219,7 @@ void testApp::drawScene()
 }
 
 //--------------------------------------------------------------
-void testApp::updateLinesMesh()
+void ofApp::updateLinesMesh()
 {
 	float currTime = ofGetElapsedTimef();
 	
@@ -225,7 +235,7 @@ void testApp::updateLinesMesh()
 	ofFloatColor scratchColor;
 	scratchColor.set( 1.0f, 1.0f, 1.0f );
 	
-	float lineConnectionMaxDistance =  ofMap( cosf( currTime / 10.0f ) , -1.0f, 1.0f, 20.0f, 60.0f); //   ofGetMouseY() / 10.0f;
+	lineConnectionMaxDistance =  ofMap( cosf( currTime / 10.0f ) , -1.0f, 1.0f, 20.0f, 60.0f); //   ofGetMouseY() / 10.0f;
 	
 	// how many slots do we need to check on each side?
 	int spacePartitioningIndexDistanceX = ceil(lineConnectionMaxDistance / spacePartitioningGridWidth);
@@ -276,9 +286,9 @@ void testApp::updateLinesMesh()
 						float tmpLineConnectionMaxDistance = lineConnectionMaxDistance;
 						
 						// lets make the allowed maximum distance smaller the closer we are to the mouse
-						float mouseMaxDist = 300.0f;
-//						tmpLineConnectionMaxDistance *= ofMap( demos[i].mouseDist, mouseMaxDist, 0.0f, 0.0f, 1.0f, true ); // the mouse reveals the mesh
-						tmpLineConnectionMaxDistance *= ofMap( demos[i].mouseDist, mouseMaxDist, 0.0f, 1.0f, 0.0f, true ); // mouse takes away the mesh
+						
+//						tmpLineConnectionMaxDistance *= ofMap( demos[i].mouseDist, mouseAffectionRadius, 0.0f, 0.0f, 1.0f, true ); // the mouse reveals the mesh
+						tmpLineConnectionMaxDistance *= ofMap( demos[i].mouseDist, mouseAffectionRadius, 0.0f, 1.0f, 0.0f, true ); // mouse takes away the mesh
 						
 						if( diffLength < tmpLineConnectionMaxDistance )
 						{
@@ -305,7 +315,7 @@ void testApp::updateLinesMesh()
 
 
 //--------------------------------------------------------------
-void testApp::updateSpacePartitioning()
+void ofApp::updateSpacePartitioning()
 {
 	// clear the space partitioning lists
 	for( int y = 0; y < spacePartitioningResY; y++ )
@@ -339,7 +349,7 @@ void testApp::updateSpacePartitioning()
 }
 
 //--------------------------------------------------------------
-void testApp::initializeSpacePartitioning()
+void ofApp::initializeSpacePartitioning()
 {
 	// Initialize storage we will use to optimize particle-to-particle distance checks
 	spacePartitioningResX = 30;
@@ -360,7 +370,7 @@ void testApp::initializeSpacePartitioning()
 
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key)
+void ofApp::keyPressed(int key)
 {
 	if( key == 'f' )
 	{
@@ -397,41 +407,41 @@ void testApp::keyPressed(int key)
 }
 
 //--------------------------------------------------------------
-void testApp::keyReleased(int key)
+void ofApp::keyReleased(int key)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y)
+void ofApp::mouseMoved(int x, int y)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button)
+void ofApp::mouseDragged(int x, int y, int button)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button)
+void ofApp::mousePressed(int x, int y, int button)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button)
+void ofApp::mouseReleased(int x, int y, int button)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::windowResized(int w, int h)
+void ofApp::windowResized(int w, int h)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg)
+void ofApp::gotMessage(ofMessage msg)
 {
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo)
+void ofApp::dragEvent(ofDragInfo dragInfo)
 {
 }
